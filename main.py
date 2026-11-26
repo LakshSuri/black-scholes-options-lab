@@ -2,6 +2,12 @@ import math
 
 from pricing import black_scholes_call, black_scholes_put
 from analysis import calculate_greeks
+from visualization import (
+    plot_option_prices,
+    plot_volatility,
+    plot_expiration,
+    plot_greeks
+)
 
 
 def display_menu():
@@ -146,7 +152,9 @@ def volatility_analysis():
             stock, strike, time, rate, vol
         )
 
-        print(f"{vol * 100:<14.2f}%{call:>12.2f}{put:>12.2f}")
+        percentage = f"{vol * 100:.2f}%"
+
+        print(f"{percentage:<15}{call:>12.2f}{put:>12.2f}")
 
 
 def time_analysis():
@@ -172,6 +180,79 @@ def time_analysis():
         print(f"{expiration:<15.4f}{call:>12.2f}{put:>12.2f}")
 
 
+def visualization_menu():
+    while True:
+        print("\n" + "=" * 48)
+        print("        OPTION PRICING VISUALIZATIONS")
+        print("=" * 48)
+        print("[1] Black-Scholes Option Pricing Curves")
+        print("[2] Volatility Sensitivity Graph")
+        print("[3] Time-to-Expiration Graph")
+        print("[4] Option Greeks Visualization")
+        print("[5] Return to Main Menu")
+        print("=" * 48)
+
+        choice = input("\nSelect a visualization: ").strip()
+
+        if choice == "5":
+            break
+
+        if choice not in ("1", "2", "3", "4"):
+            print("Invalid selection. Please try again.")
+            continue
+
+        parameters = get_inputs()
+
+        if choice == "1":
+            plot_option_prices(*parameters)
+
+        elif choice == "2":
+            plot_volatility(*parameters)
+
+        elif choice == "3":
+            plot_expiration(*parameters)
+
+        elif choice == "4":
+            greek_menu(*parameters)
+
+
+def greek_menu(stock, strike, time, rate, volatility):
+    while True:
+        print("\n--- Greeks Visualization ---")
+        print("[1] Delta")
+        print("[2] Gamma")
+        print("[3] Theta")
+        print("[4] Vega")
+        print("[5] Rho")
+        print("[6] Return to Visualization Menu")
+
+        choice = input("\nSelect a Greek: ").strip()
+
+        greek_options = {
+            "1": "delta",
+            "2": "gamma",
+            "3": "theta",
+            "4": "vega",
+            "5": "rho"
+        }
+
+        if choice == "6":
+            break
+
+        if choice in greek_options:
+            plot_greeks(
+                stock,
+                strike,
+                time,
+                rate,
+                volatility,
+                greek_options[choice]
+            )
+
+        else:
+            print("Invalid selection. Please try again.")
+
+
 def verify_parity():
     print("\n--- Put-Call Parity Verification ---")
 
@@ -194,9 +275,14 @@ def verify_parity():
     print(f"S - Ke^(-rT): {right_side:.8f}")
     print(f"Numerical difference: {difference:.10f}")
 
-    if math.isclose(left_side, right_side, rel_tol=1e-9,
-                    abs_tol=1e-8):
+    if math.isclose(
+        left_side,
+        right_side,
+        rel_tol=1e-9,
+        abs_tol=1e-8
+    ):
         print("Put-call parity successfully verified.")
+
     else:
         print("Put-call parity verification failed.")
 
@@ -226,7 +312,7 @@ def main():
             time_analysis()
 
         elif choice == "7":
-            print("\nVisualizations are coming in the next update.")
+            visualization_menu()
 
         elif choice == "8":
             verify_parity()
