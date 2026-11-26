@@ -4,8 +4,9 @@ import math
 
 
 def _validate_contract(stock, strike, time, rate, dividend):
-    if not all(map(math.isfinite, (stock, strike, time, rate, dividend))):
-        raise ValueError("Contract parameters must be finite.")
+    for value in (stock, strike, time, rate, dividend):
+        if not math.isfinite(value):
+            raise ValueError("Contract parameters must be finite.")
     if stock <= 0 or strike <= 0 or time < 0:
         raise ValueError("Spot and strike must be positive and time nonnegative.")
 
@@ -56,29 +57,41 @@ def calculate_d2(d1, volatility, time_to_expiration):
     return d1 - volatility * math.sqrt(time_to_expiration)
 
 
+def _discount(amount, exponent):
+    if amount == 0:
+        return 0.0
+    if -700 <= exponent <= 700:
+        return amount * math.exp(exponent)
+    return math.exp(math.log(amount) + exponent)
+
+
 def _discounted_values(stock, strike, time, rate, dividend):
-    def discount(amount, exponent):
-        if -700 <= exponent <= 700:
-            result = amount * math.exp(exponent)
-        else:
-            result = math.exp(math.log(amount) + exponent)
-        if not math.isfinite(result) or result == 0:
+    spot_pv = _discount(stock, -dividend * time)
+    strike_pv = _discount(strike, -rate * time)
+    for value in (spot_pv, strike_pv):
+        if not math.isfinite(value) or value == 0:
             raise FloatingPointError("Discounted value is outside floating-point range.")
-        return result
-
-    return discount(stock, -dividend * time), discount(strike, -rate * time)
+    return spot_pv, strike_pv
 
 
-def _discounted_difference(spot_pv, strike_pv, moneyness):
-    # expm1 preserves the difference for nearly equal discounted values.
-    if moneyness >= 0:
-        return -spot_pv * math.expm1(-moneyness)
-    return strike_pv * math.expm1(moneyness)
+def _pricing_terms(stock, strike, time, rate, dividend, sign):
+    spot_pv, strike_pv = _discounted_values(stock, strike, time, rate, dividend)
+    moneyness = _log_ratio(stock, strike) + (rate - dividend) * time
+    if rate == dividend:
+        # A common discount factor applies to the payoff itself.
+        payoff = max(sign * (stock - strike), 0.0)
+        intrinsic = _discount(payoff, -rate * time)
+    else:
+        # expm1 retains small differences when the discounted values nearly match.
+        if moneyness >= 0:
+            difference = -spot_pv * math.expm1(-moneyness)
+        else:
+            difference = strike_pv * math.expm1(moneyness)
+        intrinsic = max(sign * difference, 0.0)
+    return spot_pv, strike_pv, moneyness, intrinsic
 
 
-def _price_from_width(spot_pv, strike_pv, moneyness, width, sign):
-    difference = _discounted_difference(spot_pv, strike_pv, moneyness)
-    intrinsic = max(sign * difference, 0.0)
+def _price_from_width(spot_pv, strike_pv, moneyness, width, sign, intrinsic):
     if width == 0:
         return intrinsic
     if math.isinf(width):
@@ -88,7 +101,7 @@ def _price_from_width(spot_pv, strike_pv, moneyness, width, sign):
 
     d1 = moneyness / width + width / 2
     d2 = moneyness / width - width / 2
-    # Evaluate the out-of-the-money leg directly, then apply put-call parity.
+    # The smaller premium retains its time value when intrinsic value is large.
     if moneyness < 0:
         time_value = spot_pv * normal_cdf(d1) - strike_pv * normal_cdf(d2)
     else:
@@ -106,11 +119,11 @@ def black_scholes_merton(
     sign = _option_sign(option_type)
     if time == 0:
         return max(sign * (stock - strike), 0.0)
-    spot_pv, strike_pv = _discounted_values(stock, strike, time, rate, dividend_yield)
-    moneyness = _log_ratio(stock, strike) + (rate - dividend_yield) * time
-    return _price_from_width(
-        spot_pv, strike_pv, moneyness, volatility * math.sqrt(time), sign
+    spot_pv, strike_pv, moneyness, intrinsic = _pricing_terms(
+        stock, strike, time, rate, dividend_yield, sign
     )
+    width = volatility * math.sqrt(time)
+    return _price_from_width(spot_pv, strike_pv, moneyness, width, sign, intrinsic)
 
 
 def black_scholes_call(

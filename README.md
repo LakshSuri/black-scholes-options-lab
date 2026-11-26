@@ -1,6 +1,8 @@
 # Black–Scholes Options Pricing Lab
 
-A Python lab for pricing European calls and puts and testing how numerical methods converge to the Black–Scholes–Merton (BSM) model. The original interactive menu covers zero-dividend pricing, Greeks, sensitivities, charts, and put–call parity. The Python API adds continuous dividends, implied volatility, a recombining binomial tree, and Monte Carlo estimators.
+This lab asks how closely a binomial tree and a random simulation can price the same European option as the Black–Scholes–Merton formula. A European call lets its holder buy at a fixed price on the expiration date. A put lets its holder sell at that price.
+
+To try the simplest case, run the menu and choose **1**. Enter a stock price of 100, a strike of 100, one year, a rate of 5, and volatility of 20. The call price is **$10.45**. The menu takes percentages and assumes zero dividends. Use the Python functions below to include dividends, recover volatility from a price, or compare methods.
 
 ## Run the lab
 
@@ -26,17 +28,19 @@ from lattice import crr_price
 from monte_carlo import monte_carlo_price
 from pricing import black_scholes_merton
 
-args = (100.0, 105.0, 1.0, 0.04, 0.24)  # spot, strike, maturity, rate, volatility
-q = {"dividend_yield": 0.02}
-price = black_scholes_merton(*args, **q)
-vol = implied_volatility(price, *args[:4], **q)
-tree = crr_price(*args, **q, steps=1024)
+stock, strike, years, rate, vol = 100.0, 105.0, 1.0, 0.04, 0.24
+args = (stock, strike, years, rate, vol)
+yield_rate = 0.02
+price = black_scholes_merton(*args, dividend_yield=yield_rate)
+implied_vol = implied_volatility(price, stock, strike, years, rate, dividend_yield=yield_rate)
+tree = crr_price(*args, dividend_yield=yield_rate, steps=1024)
 mc = monte_carlo_price(
-    *args, **q, paths=32_768, seed=42, antithetic=True, control_variate=True
+    *args, dividend_yield=yield_rate, paths=32_768, seed=42, antithetic=True, control_variate=True
 )
-exact_greeks = calculate_greeks(*args, **q)
-bumped_greeks = numerical_greeks(*args, **q, relative_step=1e-4)
-print(price, vol, tree, mc.price, mc.standard_error, mc.confidence_interval)
+exact_greeks = calculate_greeks(*args, dividend_yield=yield_rate)
+bumped_greeks = numerical_greeks(*args, dividend_yield=yield_rate, relative_step=1e-4)
+print(round(price, 4), round(implied_vol, 4))  # 8.1357, 0.24
+print(tree, mc.price, mc.confidence_interval)
 ```
 
 The original `black_scholes_call`, `black_scholes_put`, and `calculate_d1` interfaces require positive maturity and volatility. The new pricers also accept zero maturity and zero volatility. Both Greek methods require positive maturity and volatility.
@@ -58,9 +62,9 @@ C=A\Phi(d_1)-B\Phi(d_2),\qquad
 P=B\Phi(-d_2)-A\Phi(-d_1),\qquad C-P=A-B.
 $$
 
-The implementation uses `erfc` for normal tails, `log1p` near equal spot and strike, and `expm1` for the discounted difference near forward parity. It computes the out-of-the-money leg directly and recovers the in-the-money leg through parity. At forward parity it evaluates the price with `erf`, which retains precision at tiny total volatility. Expiry returns intrinsic payoff and zero volatility returns the discounted deterministic payoff.
+A subtraction can lose significant digits when its two terms are nearly equal. The implementation uses `erfc` for normal tails, `log1p` near equal spot and strike, and `expm1` for the discounted difference near forward parity. It computes the out-of-the-money leg directly and recovers the in-the-money leg through parity. At forward parity it evaluates the price with `erf`, which retains precision at tiny total volatility. Expiry returns intrinsic payoff and zero volatility returns the discounted deterministic payoff.
 
-Implied volatility is the volatility that reproduces the supplied price under BSM. For positive maturity the call bounds are $\max(A-B,0)$ and $A$, and the put bounds are $\max(B-A,0)$ and $B$. The solver doubles a bracket in total volatility and bisects the time value. The lower bound returns zero. Expiry, the upper bound, and prices outside the bounds raise `ValueError`. When time value rounds away or vega is very small, implied volatility can be poorly identified.
+Implied volatility is the volatility that reproduces the supplied price under BSM. For positive maturity the call bounds are $\max(A-B,0)$ and $A$, and the put bounds are $\max(B-A,0)$ and $B$. The solver doubles a bracket in total volatility and bisects the time value. The lower bound returns zero. When the rate and dividend yield are equal, both cash flows share a discount factor, so the code discounts the spot–strike payoff directly. For example, with spot 105, strike 100, one year, and zero rate and yield, a call price of exactly $5 implies zero volatility. Expiry, the upper bound, and prices outside the bounds raise `ValueError`. When time value rounds away or vega is very small, implied volatility can be poorly identified.
 
 ### Cox–Ross–Rubinstein tree
 
@@ -96,7 +100,7 @@ The tree study uses spot 100, maturity one year, rate 4%, yield 2%, and volatili
 
 ## Verification
 
-The 48 tests from `research-foundation` passed before the changes. The expanded suite passed 78 tests locally on Python 3.14.6 and verifies closed-form reference values, tail behavior, dividend parity, implied-volatility inversion and bounds, deterministic limits, single-step CRR pricing and convergence, seeded sampling and variance reduction, all five analytical Greeks against centered differences, and generation of the research artifacts.
+The 48 tests from `research-foundation` passed before the changes. The expanded suite passed 84 tests locally on Python 3.14.6 and verifies closed-form reference values, tail behavior, dividend parity, implied-volatility inversion and bounds, deterministic limits, single-step CRR pricing and convergence, seeded sampling and variance reduction, all five analytical Greeks against centered differences, and generation of the research artifacts.
 
 ## References
 

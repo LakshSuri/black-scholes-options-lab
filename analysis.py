@@ -62,7 +62,9 @@ def numerical_greeks(stock, strike, time, rate, volatility, option_type="call", 
             s, strike, t, r, vol, option_type, dividend_yield=dividend_yield
         )
 
-    ds, dt, dv = (value * relative_step for value in (stock, time, volatility))
+    ds = stock * relative_step
+    dt = time * relative_step
+    dv = volatility * relative_step
     dr = max(abs(rate), 0.01) * relative_step
     for value, bump in ((stock, ds), (time, dt), (volatility, dv), (rate, dr)):
         if value + bump == value or value - bump == value:

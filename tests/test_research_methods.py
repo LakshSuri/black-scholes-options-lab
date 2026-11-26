@@ -32,6 +32,25 @@ def test_implied_volatility_round_trip(option_type, volatility):
     )
 
 
+@pytest.mark.parametrize("kind,stock", [("call", 105), ("put", 75)])
+@pytest.mark.parametrize("rate", [0.0, 0.03, -0.02])
+def test_implied_volatility_at_discounted_intrinsic_value(kind, stock, rate):
+    strike, years = 100, 1.0
+    args = (stock, strike, years, rate)
+    lower = abs(stock - strike) * math.exp(-rate * years)
+    assert black_scholes_merton(*args, 0, kind, dividend_yield=rate) == lower
+    assert implied_volatility(lower, *args, kind, dividend_yield=rate) == 0
+
+    below = math.nextafter(lower, -math.inf)
+    with pytest.raises(ValueError, match="bounds"):
+        implied_volatility(below, *args, kind, dividend_yield=rate)
+
+    above = math.nextafter(lower, math.inf)
+    vol = implied_volatility(above, *args, kind, dividend_yield=rate)
+    assert vol > 0
+    assert black_scholes_merton(*args, vol, kind, dividend_yield=rate) == above
+
+
 def test_implied_volatility_bounds_and_near_expiry():
     assert implied_volatility(0, 100, 110, 1, 0) == 0
     assert implied_volatility(10, 110, 100, 1, 0) == pytest.approx(0, abs=1e-14)

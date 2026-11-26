@@ -3,11 +3,9 @@
 import math
 
 from pricing import (
-    _discounted_difference,
-    _discounted_values,
-    _log_ratio,
     _option_sign,
     _price_from_width,
+    _pricing_terms,
     _validate_contract,
 )
 
@@ -23,9 +21,9 @@ def implied_volatility(price, stock, strike, time, rate, option_type="call", *,
     sign = _option_sign(option_type)
     if time == 0 or not math.isfinite(price):
         raise ValueError("Implied volatility requires positive time and a finite price.")
-    spot_pv, strike_pv = _discounted_values(stock, strike, time, rate, dividend_yield)
-    moneyness = _log_ratio(stock, strike) + (rate - dividend_yield) * time
-    intrinsic = max(sign * _discounted_difference(spot_pv, strike_pv, moneyness), 0.0)
+    spot_pv, strike_pv, moneyness, intrinsic = _pricing_terms(
+        stock, strike, time, rate, dividend_yield, sign
+    )
     upper = spot_pv if sign == 1 else strike_pv
     if not intrinsic <= price < upper:
         raise ValueError("Price lies outside finite-volatility bounds.")
@@ -38,17 +36,19 @@ def implied_volatility(price, stock, strike, time, rate, option_type="call", *,
     otm_upper = spot_pv if otm_sign == 1 else strike_pv
     if target >= otm_upper:
         raise ValueError("Price is indistinguishable from its upper bound after rounding.")
+
+    def time_value(width):
+        return _price_from_width(spot_pv, strike_pv, moneyness, width, otm_sign, intrinsic=0.0)
+
     low, high = 0.0, 1.0
-    while _price_from_width(spot_pv, strike_pv, moneyness, high, otm_sign) < target:
+    while time_value(high) < target:
         high *= 2
 
-    # Halve the bracket until its width is small relative to total volatility.
     while high - low > 1e-12 * high:
         mid = low + (high - low) / 2
         if mid == low or mid == high:
             break
-        estimate = _price_from_width(spot_pv, strike_pv, moneyness, mid, otm_sign)
-        if estimate < target:
+        if time_value(mid) < target:
             low = mid
         else:
             high = mid
