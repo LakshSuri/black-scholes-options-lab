@@ -1,0 +1,24 @@
+{
+    "python_version": "3.14.6",
+    "python_implementation": "CPython",
+    "operating_system": "Darwin",
+    "operating_system_release": "27.2.0",
+    "architecture": "arm64",
+    "dependencies": {
+        "numpy": "2.5.5",
+        "matplotlib": "3.11.2",
+        "pytest": "9.2.0"
+    },
+    "experiment_configuration": {
+        "monte_carlo_seed": 42,
+        "monte_carlo_replications": 100,
+        "benchmark_seed": 42,
+        "benchmark_replications": 30
+    },
+    "reproducibility_notes": [
+        "Stochastic experiments use fixed random seeds.",
+        "Simulation budgets include pilot samples.",
+        "Runtime measurements depend on hardware and system load.",
+        "Floating-point results may vary across environments."
+    ]
+}
