@@ -1,0 +1,43 @@
+name: Continuous Integration
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: Python 3.14 Validation
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    env:
+      MPLBACKEND: Agg
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - name: Set up Python
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.14"
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r requirements.txt
+
+      - name: Validate dependencies
+        run: python -m pip check
+
+      - name: Run automated tests
+        run: python -m pytest -v
