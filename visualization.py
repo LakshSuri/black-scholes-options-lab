@@ -5,6 +5,9 @@ from analysis import calculate_greeks
 
 
 def generate_range(start, end, points=100):
+    if points < 2:
+        raise ValueError("At least two points are required.")
+
     step = (end - start) / (points - 1)
 
     return [
@@ -13,215 +16,205 @@ def generate_range(start, end, points=100):
     ]
 
 
-def plot_option_prices(stock, strike, time, rate, volatility):
-    stock_prices = generate_range(
+def plot_curves(
+    x_values,
+    call_values,
+    put_values,
+    title,
+    xlabel,
+    ylabel,
+    reference,
+    reference_label
+):
+    fig, ax = plt.subplots(figsize=(10, 6))
+
+    ax.plot(
+        x_values,
+        call_values,
+        label="European Call",
+        color="#0d9488",
+        linewidth=2
+    )
+
+    ax.plot(
+        x_values,
+        put_values,
+        label="European Put",
+        color="#2563eb",
+        linewidth=2,
+        linestyle="--"
+    )
+
+    ax.axvline(
+        reference,
+        color="#64748b",
+        linestyle=":",
+        label=reference_label
+    )
+
+    ax.set_title(title)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+
+    ax.spines["top"].set_visible(False)
+    ax.spines["right"].set_visible(False)
+
+    ax.legend(frameon=False)
+    ax.grid(alpha=0.2)
+
+    fig.tight_layout()
+
+    plt.show()
+    plt.close(fig)
+
+
+def plot_option_prices(
+    stock, strike, time, rate,
+    volatility, dividend_yield=0.0
+):
+    stocks = generate_range(
         stock * 0.5, stock * 1.5
     )
 
-    call_prices = []
-    put_prices = []
-
-    for price in stock_prices:
-        call_prices.append(
-            black_scholes_call(
-                price, strike, time, rate, volatility
-            )
+    calls = [
+        black_scholes_call(
+            value, strike, time, rate,
+            volatility, dividend_yield
         )
+        for value in stocks
+    ]
 
-        put_prices.append(
-            black_scholes_put(
-                price, strike, time, rate, volatility
-            )
+    puts = [
+        black_scholes_put(
+            value, strike, time, rate,
+            volatility, dividend_yield
         )
+        for value in stocks
+    ]
 
-    plt.figure(figsize=(10, 6))
-
-    plt.plot(
-        stock_prices, call_prices,
-        label="Call Option", color="green", linewidth=2
+    plot_curves(
+        stocks, calls, puts,
+        "Black-Scholes-Merton Option Pricing",
+        "Underlying asset price ($)",
+        "Theoretical option price ($)",
+        strike,
+        "Strike price"
     )
 
-    plt.plot(
-        stock_prices, put_prices,
-        label="Put Option", color="blue", linewidth=2
-    )
 
-    plt.axvline(
-        strike, color="gray",
-        linestyle="--", label="Strike Price"
-    )
-
-    plt.title("Black-Scholes Option Pricing Curves")
-    plt.xlabel("Stock Price ($)")
-    plt.ylabel("Theoretical Option Price ($)")
-    plt.legend()
-    plt.grid(alpha=0.25)
-    plt.tight_layout()
-    plt.show()
-    plt.close()
-
-
-def plot_volatility(stock, strike, time, rate, volatility):
+def plot_volatility(
+    stock, strike, time, rate,
+    volatility, dividend_yield=0.0
+):
     volatilities = generate_range(
         volatility * 0.25, volatility * 2
     )
 
-    call_prices = []
-    put_prices = []
-
-    for vol in volatilities:
-        call_prices.append(
-            black_scholes_call(
-                stock, strike, time, rate, vol
-            )
+    calls = [
+        black_scholes_call(
+            stock, strike, time, rate,
+            value, dividend_yield
         )
-
-        put_prices.append(
-            black_scholes_put(
-                stock, strike, time, rate, vol
-            )
-        )
-
-    percentages = [
-        vol * 100 for vol in volatilities
+        for value in volatilities
     ]
 
-    plt.figure(figsize=(10, 6))
+    puts = [
+        black_scholes_put(
+            stock, strike, time, rate,
+            value, dividend_yield
+        )
+        for value in volatilities
+    ]
 
-    plt.plot(
-        percentages, call_prices,
-        label="Call Option", color="green", linewidth=2
-    )
+    percentages = [
+        value * 100 for value in volatilities
+    ]
 
-    plt.plot(
-        percentages, put_prices,
-        label="Put Option", color="blue", linewidth=2
-    )
-
-    plt.axvline(
+    plot_curves(
+        percentages, calls, puts,
+        "Option Price Sensitivity to Volatility",
+        "Annualized volatility (%)",
+        "Theoretical option price ($)",
         volatility * 100,
-        color="gray",
-        linestyle="--",
-        label="Reference Volatility"
+        "Reference volatility"
     )
 
-    plt.title("Option Price Sensitivity to Volatility")
-    plt.xlabel("Annual Volatility (%)")
-    plt.ylabel("Theoretical Option Price ($)")
-    plt.legend()
-    plt.grid(alpha=0.25)
-    plt.tight_layout()
-    plt.show()
-    plt.close()
 
-
-def plot_expiration(stock, strike, time, rate, volatility):
-    expiration_periods = generate_range(
+def plot_expiration(
+    stock, strike, time, rate,
+    volatility, dividend_yield=0.0
+):
+    expirations = generate_range(
         time * 0.01, time * 2
     )
 
-    call_prices = []
-    put_prices = []
-
-    for expiration in expiration_periods:
-        call_prices.append(
-            black_scholes_call(
-                stock, strike, expiration, rate, volatility
-            )
+    calls = [
+        black_scholes_call(
+            stock, strike, value, rate,
+            volatility, dividend_yield
         )
+        for value in expirations
+    ]
 
-        put_prices.append(
-            black_scholes_put(
-                stock, strike, expiration, rate, volatility
-            )
+    puts = [
+        black_scholes_put(
+            stock, strike, value, rate,
+            volatility, dividend_yield
         )
+        for value in expirations
+    ]
 
-    plt.figure(figsize=(10, 6))
-
-    plt.plot(
-        expiration_periods, call_prices,
-        label="Call Option", color="green", linewidth=2
+    plot_curves(
+        expirations, calls, puts,
+        "Option Price Sensitivity to Expiration",
+        "Time to expiration (years)",
+        "Theoretical option price ($)",
+        time,
+        "Reference expiration"
     )
-
-    plt.plot(
-        expiration_periods, put_prices,
-        label="Put Option", color="blue", linewidth=2
-    )
-
-    plt.axvline(
-        time, color="gray",
-        linestyle="--", label="Reference Expiration"
-    )
-
-    plt.title("Option Price Sensitivity to Expiration")
-    plt.xlabel("Time to Expiration (Years)")
-    plt.ylabel("Theoretical Option Price ($)")
-    plt.legend()
-    plt.grid(alpha=0.25)
-    plt.tight_layout()
-    plt.show()
-    plt.close()
 
 
 def plot_greeks(
-    stock, strike, time, rate, volatility,
-    greek="delta"
+    stock, strike, time, rate,
+    volatility, greek="delta",
+    dividend_yield=0.0
 ):
     labels = {
         "delta": "Delta",
         "gamma": "Gamma",
-        "theta": "Theta (Per Day)",
-        "vega": "Vega (Per Percentage Point)",
-        "rho": "Rho (Per Percentage Point)"
+        "theta": "Theta (per day)",
+        "vega": "Vega (per percentage point)",
+        "rho": "Rho (per percentage point)"
     }
 
     if greek not in labels:
         raise ValueError("Invalid Greek selected.")
 
-    stock_prices = generate_range(
+    stocks = generate_range(
         stock * 0.5, stock * 1.5
     )
 
-    call_values = []
-    put_values = []
+    calls = [
+        calculate_greeks(
+            value, strike, time, rate,
+            volatility, "call", dividend_yield
+        )[greek]
+        for value in stocks
+    ]
 
-    for price in stock_prices:
-        call_greeks = calculate_greeks(
-            price, strike, time, rate,
-            volatility, "call"
-        )
+    puts = [
+        calculate_greeks(
+            value, strike, time, rate,
+            volatility, "put", dividend_yield
+        )[greek]
+        for value in stocks
+    ]
 
-        put_greeks = calculate_greeks(
-            price, strike, time, rate,
-            volatility, "put"
-        )
-
-        call_values.append(call_greeks[greek])
-        put_values.append(put_greeks[greek])
-
-    plt.figure(figsize=(10, 6))
-
-    plt.plot(
-        stock_prices, call_values,
-        label="Call Option", color="green", linewidth=2
+    plot_curves(
+        stocks, calls, puts,
+        f"{greek.capitalize()} Sensitivity Analysis",
+        "Underlying asset price ($)",
+        labels[greek],
+        strike,
+        "Strike price"
     )
-
-    plt.plot(
-        stock_prices, put_values,
-        label="Put Option", color="blue",
-        linewidth=2, linestyle="--"
-    )
-
-    plt.axvline(
-        strike, color="gray",
-        linestyle="--", label="Strike Price"
-    )
-
-    plt.title(f"{greek.capitalize()} Sensitivity Analysis")
-    plt.xlabel("Stock Price ($)")
-    plt.ylabel(labels[greek])
-    plt.legend()
-    plt.grid(alpha=0.25)
-    plt.tight_layout()
-    plt.show()
-    plt.close()
