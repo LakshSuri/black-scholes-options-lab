@@ -13,17 +13,9 @@ def calculate_greeks(
     time_to_expiration,
     risk_free_rate,
     volatility,
-    option_type="call"
+    option_type="call",
+    dividend_yield=0.0
 ):
-    if stock_price <= 0 or strike_price <= 0:
-        raise ValueError("Stock and strike prices must be positive.")
-
-    if time_to_expiration <= 0:
-        raise ValueError("Time to expiration must be positive.")
-
-    if volatility <= 0:
-        raise ValueError("Volatility must be positive.")
-
     if option_type not in ("call", "put"):
         raise ValueError("Option type must be 'call' or 'put'.")
 
@@ -32,7 +24,8 @@ def calculate_greeks(
         strike_price,
         time_to_expiration,
         risk_free_rate,
-        volatility
+        volatility,
+        dividend_yield
     )
 
     d2 = calculate_d2(
@@ -41,59 +34,71 @@ def calculate_greeks(
         time_to_expiration
     )
 
-    discount_factor = math.exp(
+    sqrt_time = math.sqrt(time_to_expiration)
+
+    stock_discount = math.exp(
+        -dividend_yield * time_to_expiration
+    )
+
+    strike_discount = math.exp(
         -risk_free_rate * time_to_expiration
     )
 
+    discounted_stock = stock_price * stock_discount
+    discounted_strike = strike_price * strike_discount
+
     pdf_d1 = normal_pdf(d1)
 
-    gamma = pdf_d1 / (
-        stock_price * volatility * math.sqrt(time_to_expiration)
+    gamma = (
+        stock_discount * pdf_d1
+        / (stock_price * volatility * sqrt_time)
     )
 
-    vega = (
-        stock_price * pdf_d1 * math.sqrt(time_to_expiration)
-    ) / 100
+    vega = discounted_stock * pdf_d1 * sqrt_time / 100
+
+    common_theta = (
+        -discounted_stock * pdf_d1 * volatility
+        / (2 * sqrt_time)
+    )
 
     if option_type == "call":
-        delta = normal_cdf(d1)
+        delta = stock_discount * normal_cdf(d1)
 
         theta = (
-            -(stock_price * pdf_d1 * volatility)
-            / (2 * math.sqrt(time_to_expiration))
+            common_theta
             - risk_free_rate
-            * strike_price
-            * discount_factor
+            * discounted_strike
             * normal_cdf(d2)
+            + dividend_yield
+            * discounted_stock
+            * normal_cdf(d1)
         )
 
         rho = (
-            strike_price
+            discounted_strike
             * time_to_expiration
-            * discount_factor
             * normal_cdf(d2)
         ) / 100
 
     else:
-        delta = normal_cdf(d1) - 1
+        delta = stock_discount * (normal_cdf(d1) - 1)
 
         theta = (
-            -(stock_price * pdf_d1 * volatility)
-            / (2 * math.sqrt(time_to_expiration))
+            common_theta
             + risk_free_rate
-            * strike_price
-            * discount_factor
+            * discounted_strike
             * normal_cdf(-d2)
+            - dividend_yield
+            * discounted_stock
+            * normal_cdf(-d1)
         )
 
         rho = (
-            -strike_price
+            -discounted_strike
             * time_to_expiration
-            * discount_factor
             * normal_cdf(-d2)
         ) / 100
 
-    # Convert annual theta to daily theta.
     theta = theta / 365
 
     return {

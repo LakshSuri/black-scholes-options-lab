@@ -6,14 +6,16 @@ def validate_inputs(
     strike_price,
     time_to_expiration,
     risk_free_rate,
-    volatility
+    volatility,
+    dividend_yield=0.0
 ):
     parameters = {
         "Stock price": stock_price,
         "Strike price": strike_price,
         "Time to expiration": time_to_expiration,
         "Risk-free rate": risk_free_rate,
-        "Volatility": volatility
+        "Volatility": volatility,
+        "Dividend yield": dividend_yield
     }
 
     for name, value in parameters.items():
@@ -32,9 +34,12 @@ def validate_inputs(
     if volatility <= 0:
         raise ValueError("Volatility must be positive.")
 
+    if dividend_yield < 0:
+        raise ValueError("Dividend yield cannot be negative.")
+
 
 def normal_cdf(x):
-    return 0.5 * (1 + math.erf(x / math.sqrt(2)))
+    return 0.5 * math.erfc(-x / math.sqrt(2))
 
 
 def calculate_d1(
@@ -42,20 +47,26 @@ def calculate_d1(
     strike_price,
     time_to_expiration,
     risk_free_rate,
-    volatility
+    volatility,
+    dividend_yield=0.0
 ):
     validate_inputs(
         stock_price,
         strike_price,
         time_to_expiration,
         risk_free_rate,
-        volatility
+        volatility,
+        dividend_yield
     )
 
     numerator = (
-        math.log(stock_price / strike_price)
-        + (risk_free_rate + (volatility ** 2) / 2)
-        * time_to_expiration
+        math.log(stock_price)
+        - math.log(strike_price)
+        + (
+            risk_free_rate
+            - dividend_yield
+            + volatility ** 2 / 2
+        ) * time_to_expiration
     )
 
     denominator = volatility * math.sqrt(time_to_expiration)
@@ -72,14 +83,16 @@ def black_scholes_call(
     strike_price,
     time_to_expiration,
     risk_free_rate,
-    volatility
+    volatility,
+    dividend_yield=0.0
 ):
     d1 = calculate_d1(
         stock_price,
         strike_price,
         time_to_expiration,
         risk_free_rate,
-        volatility
+        volatility,
+        dividend_yield
     )
 
     d2 = calculate_d2(
@@ -88,11 +101,17 @@ def black_scholes_call(
         time_to_expiration
     )
 
+    discounted_stock = stock_price * math.exp(
+        -dividend_yield * time_to_expiration
+    )
+
+    discounted_strike = strike_price * math.exp(
+        -risk_free_rate * time_to_expiration
+    )
+
     call_price = (
-        stock_price * normal_cdf(d1)
-        - strike_price
-        * math.exp(-risk_free_rate * time_to_expiration)
-        * normal_cdf(d2)
+        discounted_stock * normal_cdf(d1)
+        - discounted_strike * normal_cdf(d2)
     )
 
     return call_price
@@ -103,14 +122,16 @@ def black_scholes_put(
     strike_price,
     time_to_expiration,
     risk_free_rate,
-    volatility
+    volatility,
+    dividend_yield=0.0
 ):
     d1 = calculate_d1(
         stock_price,
         strike_price,
         time_to_expiration,
         risk_free_rate,
-        volatility
+        volatility,
+        dividend_yield
     )
 
     d2 = calculate_d2(
@@ -119,11 +140,17 @@ def black_scholes_put(
         time_to_expiration
     )
 
+    discounted_stock = stock_price * math.exp(
+        -dividend_yield * time_to_expiration
+    )
+
+    discounted_strike = strike_price * math.exp(
+        -risk_free_rate * time_to_expiration
+    )
+
     put_price = (
-        strike_price
-        * math.exp(-risk_free_rate * time_to_expiration)
-        * normal_cdf(-d2)
-        - stock_price * normal_cdf(-d1)
+        discounted_strike * normal_cdf(-d2)
+        - discounted_stock * normal_cdf(-d1)
     )
 
     return put_price
