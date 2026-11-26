@@ -1,0 +1,5 @@
+Python 3.14.6
+NumPy 2.5.1
+Matplotlib 3.11.0
+Seed 20261126
+Replications 48
