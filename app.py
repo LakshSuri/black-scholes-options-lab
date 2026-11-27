@@ -54,6 +54,11 @@ def navigation():
     st.sidebar.caption("RESOURCES")
 
     st.sidebar.markdown(
+        "[Coding Journey — Portfolio Hub]"
+        "(https://github.com/LakshSuri/coding-journey)"
+    )
+
+    st.sidebar.markdown(
         f"[GitHub Repository]({REPOSITORY})"
     )
 
