@@ -1,153 +1,264 @@
 # Derivatives Pricing Laboratory
 
 [![Python 3.14](https://img.shields.io/badge/Python-3.14-blue)](https://docs.python.org/3.14/)
-[![Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml/badge.svg)](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)
+[![Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
-A Python laboratory for European and American option valuation, numerical approximation, variance reduction, sensitivity analysis, and reproducible computational experiments.
+A computational finance laboratory for European and American option valuation, numerical approximation, stochastic simulation, variance reduction, sensitivity analysis, and reproducible mathematical research.
 
-The project compares established derivatives pricing methods under controlled mathematical assumptions, with an emphasis on numerical accuracy, statistical uncertainty, and computational cost.
+The project investigates established derivatives pricing methods under controlled mathematical assumptions, emphasizing numerical accuracy, convergence, statistical uncertainty, and computational efficiency.
 
-**[Technical report](research/technical_report.md) · [Research datasets](results/data/) · [Research figures](results/figures/) · [Continuous integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)**
+**[Technical Report](research/technical_report.md) · [Research Datasets](results/data/) · [Research Figures](results/figures/) · [Releases](https://github.com/LakshSuri/black-scholes-options-lab/releases) · [Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)**
 
 ## Overview
 
-| Pricing implementations | Computational studies | Experimental observations | Recorded local tests |
+| Pricing Implementations | Computational Studies | Experimental Observations | Passing Local Tests |
 |:---:|:---:|:---:|:---:|
-| 6 | 5 | 2,958 | 212 passing |
+| 6 | 5 | 2,958 | 212 |
 
-The six pricing implementations comprise one analytical model, one binomial model, and four Monte Carlo estimators. The laboratory also includes analytical and numerical calculations of five Greeks, an implied volatility solver, thirteen interactive menu features, eight interactive visualization types, eight published CSV datasets, and six research figures.
+The laboratory integrates one analytical pricing model, one lattice-based numerical model, and four Monte Carlo estimators within a modular Python framework.
+
+Additional capabilities include analytical and numerical calculations of five option Greeks, implied volatility inversion, thirteen interactive application features, eight interactive visualization types, eight published CSV datasets, and six research figures.
 
 ## Contents
 
-- [Quick start](#quick-start)
-- [Mathematical framework](#mathematical-framework)
-- [Research findings](#research-findings)
-- [Python examples](#python-examples)
-- [Project architecture](#project-architecture)
-- [Reproducibility and validation](#reproducibility-and-validation)
+- [Quick Start](#quick-start)
+- [Mathematical Framework](#mathematical-framework)
+- [Research Findings](#research-findings)
+- [Python Examples](#python-examples)
+- [Project Architecture](#project-architecture)
+- [Reproducibility and Validation](#reproducibility-and-validation)
+- [Technical Documentation](#technical-documentation)
 - [Limitations](#limitations)
 - [References](#references)
-- [Future development](#future-development)
-- [Development transparency](#development-transparency)
+- [Future Development](#future-development)
+- [Development Transparency](#development-transparency)
+- [License](#license)
 
-## Quick start
+## Quick Start
 
-Use Python 3.14. The recorded development environment is CPython 3.14.6 on macOS (ARM64). The installation commands below are for macOS or Linux with Python 3.14 already installed.
+### Installation
+
+Python 3.14 is the primary development environment. The recorded computational experiments were conducted using CPython 3.14.6 on macOS with ARM64 architecture.
+
+For macOS or Linux with Python 3.14 installed:
 
 ```bash
 git clone https://github.com/LakshSuri/black-scholes-options-lab.git
 cd black-scholes-options-lab
+
 python3.14 -m venv .venv
 source .venv/bin/activate
+
 python -m pip install -r requirements.txt
 python -m pip check
+```
+
+For Windows PowerShell, create and activate the virtual environment using:
+
+```powershell
+py -3.14 -m venv .venv
+.venv\Scripts\Activate.ps1
+```
+
+Then install the dependencies using the same pip commands. Windows compatibility has not been independently validated.
+
+### Running the Application
+
+```bash
 python main.py
 ```
 
-For Windows PowerShell, create and activate the environment using `py -3.14 -m venv .venv` and `.venv\Scripts\Activate.ps1` instead. Windows compatibility has not been independently validated.
+The interactive command-line application provides the following capabilities:
 
-### Interactive application
-
-| Analytical pricing | Sensitivity analysis | Computational finance |
+| Analytical Pricing | Sensitivity Analysis | Computational Finance |
 |---|---|---|
-| 1. European call pricing | 5. Volatility sensitivity | 9. Implied volatility solver |
-| 2. European put pricing | 6. Expiration sensitivity | 10. European and American binomial pricing |
-| 3. Call and put comparison | 7. Interactive visualizations | 11. Monte Carlo pricing |
-| 4. Analytical Greeks | 8. Put-call parity | 12. Pricing model comparison |
-| | | 13. Numerical Greeks validation |
+| European call pricing | Volatility sensitivity | Implied volatility solver |
+| European put pricing | Expiration sensitivity | European and American binomial pricing |
+| Call and put comparison | Interactive visualizations | Monte Carlo pricing |
+| Analytical Greeks | Put-call parity verification | Pricing model comparison |
+| | | Numerical Greeks validation |
 
-Select option 14 to exit. The visualization menu contains option pricing, volatility, expiration, and all five Greek plots. The CLI accepts rates and volatility as percentages; the Python functions accept decimal values.
+The visualization menu supports option pricing curves, volatility sensitivity, expiration sensitivity, and all five option Greeks.
 
-## Mathematical framework
+Rates, volatility, and dividend yields are entered as percentages in the interactive application and as decimals when using the Python functions.
 
-| Module | Method and capabilities |
-|---|---|
-| [Analytical pricing](pricing.py) | Dividend-adjusted Black-Scholes-Merton valuation for European calls and puts |
-| [Binomial pricing](lattice.py) | Cox-Ross-Rubinstein recombining tree, backward induction, European and American exercise |
-| [Monte Carlo](monte_carlo.py) | Risk-neutral terminal asset simulation, variance reduction, standard errors and approximate confidence intervals |
-| [Implied volatility](implied_volatility.py) | Price-bound validation, expanding bracket and bisection |
-| [Analytical Greeks](analysis.py) | Delta, Gamma, Theta, Vega and Rho |
-| [Numerical Greeks](numerical_greeks.py) | Central finite-difference sensitivities and numerical comparisons |
+## Mathematical Framework
 
-The dividend-adjusted European call price is
+### Core Computational Methods
 
-$$
-C = Se^{-qT}N(d_1) - Ke^{-rT}N(d_2),
-$$
+| Method | Implementation | Capabilities |
+|---|---|---|
+| Black-Scholes-Merton | [pricing.py](pricing.py) | Analytical European call and put valuation with continuous dividend yields |
+| Cox-Ross-Rubinstein | [lattice.py](lattice.py) | European and American option valuation through backward induction |
+| Monte Carlo | [monte_carlo.py](monte_carlo.py) | Stochastic valuation, variance reduction, and statistical uncertainty |
+| Implied Volatility | [implied_volatility.py](implied_volatility.py) | Price-bound validation and numerical inversion |
+| Analytical Greeks | [analysis.py](analysis.py) | Closed-form option sensitivities |
+| Numerical Greeks | [numerical_greeks.py](numerical_greeks.py) | Central finite-difference approximations |
+
+### Black-Scholes-Merton Model
+
+The dividend-adjusted European call price is:
+
+```math
+C = Se^{-qT}N(d_1)-Ke^{-rT}N(d_2)
+```
 
 where
 
-$$
-d_1=\frac{\ln(S/K)+(r-q+\sigma^2/2)T}{\sigma\sqrt{T}},\qquad d_2=d_1-\sigma\sqrt{T}.
-$$
+```math
+d_1=\frac{\ln(S/K)+(r-q+\sigma^2/2)T}{\sigma\sqrt{T}}
+```
 
-Here, $S$ is the asset price, $K$ the strike, $T$ the time to expiration, $r$ the continuously compounded risk-free rate, $q$ the continuous dividend yield, $\sigma$ annualized volatility, and $N$ the standard normal cumulative distribution function.
+```math
+d_2=d_1-\sigma\sqrt{T}
+```
 
-The Monte Carlo engine includes standard, antithetic, control-variate and combined estimators. Independent antithetic pair averages are used for uncertainty estimation; control coefficients are estimated using separate pilot samples included in the total simulation budget. Theta is reported per calendar day, and Vega and Rho per one percentage-point change in volatility or interest rate.
+| Parameter | Definition |
+|---|---|
+| S | Underlying asset price |
+| K | Strike price |
+| T | Time to expiration in years |
+| r | Continuously compounded risk-free interest rate |
+| q | Continuous dividend yield |
+| σ | Annualized volatility |
+| N | Standard normal cumulative distribution function |
 
-Detailed formulas, derivations, experimental designs, and assumptions are provided in the [technical report](research/technical_report.md).
+The analytical implementation also supports European put valuation and dividend-adjusted put-call parity.
 
-## Research findings
+### Binomial Pricing
 
-The five studies use synthetic option parameters and compare numerical estimates against the Black-Scholes-Merton reference where applicable. These results evaluate computational behavior under a common model rather than predictive accuracy against historical market prices.
+The Cox-Ross-Rubinstein implementation uses a recombining binomial tree to approximate option values through risk-neutral probabilities and backward induction.
 
-| Study | Recorded observations | Dataset |
+European options are valued using terminal payoffs. American options additionally compare continuation value against immediate exercise value at each applicable tree node.
+
+The implementation supports adjustable tree resolution and early-exercise premium estimation.
+
+### Monte Carlo Simulation
+
+Four stochastic estimators are available:
+
+| Estimator | Methodology |
+|---|---|
+| Standard | Independent random sampling |
+| Antithetic | Paired positive and negative random shocks |
+| Control Variate | Adjustment using a control with known expectation |
+| Combined | Antithetic sampling with control variates |
+
+The simulation engine provides standard deviations, standard errors, approximate 95% confidence intervals, and fixed-seed reproducibility.
+
+Antithetic pair averages are treated as independent observations for uncertainty estimation. Control coefficients are estimated from separate pilot samples, which are included in the total simulation budget.
+
+### Implied Volatility
+
+The numerical solver recovers volatility from a European option price using an expanding search bracket followed by bisection.
+
+The implementation validates strict theoretical pricing bounds before attempting inversion.
+
+### Option Greeks
+
+| Greek | Interpretation |
+|---|---|
+| Delta | Sensitivity to the underlying asset price |
+| Gamma | Sensitivity of Delta to the underlying asset price |
+| Theta | Sensitivity to the passage of calendar time |
+| Vega | Sensitivity to model volatility |
+| Rho | Sensitivity to the risk-free interest rate |
+
+Both analytical and central finite-difference implementations are available.
+
+Theta is reported per calendar day. Vega and Rho are reported per percentage-point change in volatility and interest rates, respectively.
+
+Detailed mathematical derivations are available in the [technical research report](research/technical_report.md).
+
+## Research Findings
+
+Five computational studies investigate approximation accuracy, convergence, statistical efficiency, numerical conditioning, and execution time.
+
+| Computational Study | Recorded Observations | Published Data |
 |---|---:|---|
-| Binomial convergence | 128 | [Convergence data](results/data/tree_convergence.csv) |
+| Binomial convergence | 128 | [Dataset](results/data/tree_convergence.csv) |
 | Monte Carlo convergence | 1,600 | [Summary](results/data/monte_carlo_summary.csv) · [Replications](results/data/monte_carlo_replications.csv) |
-| Numerical Greek stability | 390 | [Stability data](results/data/greek_stability.csv) · [Best tested steps](results/data/optimal_greek_steps.csv) |
-| Implied volatility conditioning | 240 | [Conditioning data](results/data/volatility_conditioning.csv) |
+| Numerical Greek stability | 390 | [Dataset](results/data/greek_stability.csv) · [Optimal Steps](results/data/optimal_greek_steps.csv) |
+| Implied volatility conditioning | 240 | [Dataset](results/data/volatility_conditioning.csv) |
 | Computational benchmarking | 600 | [Summary](results/data/benchmark_summary.csv) · [Replications](results/data/benchmark_replications.csv) |
 | **Total** | **2,958** | |
 
-The count excludes summary rows and does not imply that all observations are statistically independent.
+The observation count excludes summary rows and does not imply statistical independence across all observations.
 
-### 1. Binomial convergence
+### 1. Binomial Convergence
 
-Four strike prices (80, 95, 100, and 120 USD), two European option types, and sixteen tree resolutions (16–2,049 steps) were evaluated with asset price of 100 USD, expiration one year, risk-free rate 5%, volatility 20%, and dividend yield 2%.
+The convergence experiment evaluates four strike prices, two European option types, and sixteen tree resolutions ranging from 16 to 2,049 steps.
 
-For the call with a strike of 80 USD, signed pricing error changes from −0.002995 at 16 steps to −0.009224 at 32 steps. This demonstrates that increasing tree resolution does not necessarily reduce absolute error monotonically. Consecutive even and odd resolutions expose oscillatory behavior.
+For a European call with a strike price of 80 USD, signed pricing error changes from approximately -0.002995 at 16 steps to -0.009224 at 32 steps.
 
-![CRR signed pricing error across four call strikes](results/figures/tree_convergence.png)
+This demonstrates that increasing tree resolution does not necessarily produce monotonic reductions in pricing error.
 
-*Figure 1. European call pricing error across even and odd CRR tree resolutions.*
+Consecutive even and odd resolutions are included to investigate oscillatory convergence behavior.
 
-### 2. Monte Carlo convergence and variance reduction
+![CRR binomial convergence](results/figures/tree_convergence.png)
 
-Four estimators were evaluated at four simulation budgets, with 100 replications per configuration. The European call uses $S=100$, $K=105$, $T=1$, $r=5\%$, $\sigma=25\%$, and $q=2\%$. Its analytical reference price is 8.941176 USD.
+*Figure 1. Signed European call pricing error across even and odd binomial tree resolutions.*
 
-| Total simulation budget | Standard RMSE | Antithetic RMSE | Control RMSE | Combined RMSE |
+### 2. Monte Carlo Convergence and Variance Reduction
+
+Four estimators were evaluated across four simulation budgets, using 100 independent replications per configuration.
+
+The reference European call configuration uses the following parameters:
+
+| Parameter | Value |
+|---|---:|
+| Underlying asset price | 100 USD |
+| Strike price | 105 USD |
+| Expiration | 1 year |
+| Risk-free rate | 5% |
+| Annualized volatility | 25% |
+| Continuous dividend yield | 2% |
+| Analytical reference price | 8.941176 USD |
+
+The experiment produced the following root mean squared errors:
+
+| Simulation Budget | Standard | Antithetic | Control | Combined |
 |---:|---:|---:|---:|---:|
 | 1,024 | 0.516336 | 0.359410 | 0.239647 | 0.109060 |
 | 4,096 | 0.223915 | 0.192989 | 0.115875 | 0.056191 |
 | 16,384 | 0.121932 | 0.097804 | 0.060858 | 0.025163 |
 | 65,536 | 0.068021 | 0.050569 | 0.028845 | 0.013657 |
 
-The combined estimator achieved the lowest observed RMSE at every tested budget. At 65,536 evaluations, it reduced RMSE by approximately **79.9%**, corresponding to an empirical MSE ratio of **24.81** relative to standard Monte Carlo. This is a statistical comparison at equal evaluation budgets, not a 24.81-fold runtime speedup.
+The combined estimator achieved the lowest observed RMSE at every tested simulation budget.
 
-![Monte Carlo root mean squared error versus total simulation budget](results/figures/monte_carlo_convergence.png)
+At 65,536 evaluations, combining antithetic and control variates reduced RMSE by approximately **79.9%** relative to standard Monte Carlo.
 
-*Figure 2. Observed RMSE by estimator with a reference slope of −1/2.*
+The corresponding empirical mean squared error ratio was approximately **24.81**.
 
-#### Confidence interval coverage
+This ratio measures statistical efficiency at equal evaluation budgets rather than a direct runtime speedup.
 
-At the largest simulation budget, empirical coverage of approximate 95% confidence intervals was:
+![Monte Carlo convergence](results/figures/monte_carlo_convergence.png)
 
-| Standard | Antithetic | Control | Combined |
-|---:|---:|---:|---:|
-| 94% | 98% | 97% | 97% |
+*Figure 2. Observed root mean squared error across simulation budgets, including a reference convergence slope of -1/2.*
 
-The coverage estimates are broadly consistent with nominal coverage, but 100 replications limit statistical precision. These results do not establish coverage guarantees for other option parameters.
+#### Confidence Interval Coverage
 
-![Empirical confidence interval coverage by simulation budget](results/figures/confidence_coverage.png)
+At the largest simulation budget, observed coverage of approximate 95% confidence intervals was:
 
-*Figure 3. Empirical coverage compared with the nominal 95% confidence level.*
+| Estimator | Empirical Coverage | Relative MSE Efficiency |
+|---|---:|---:|
+| Standard | 94% | 1.00 |
+| Antithetic | 98% | 1.81 |
+| Control | 97% | 5.56 |
+| Combined | 97% | 24.81 |
 
-### 3. Numerical Greek stability
+The measured coverage rates are broadly consistent with the nominal 95% confidence level, although 100 replications limit the precision of these estimates.
 
-Thirteen relative step sizes from $10^{-1}$ to $10^{-13}$ were evaluated across three market scenarios, two option types and five Greeks.
+![Monte Carlo confidence interval coverage](results/figures/confidence_coverage.png)
 
-| Greek | Best relative step sizes observed |
+*Figure 3. Empirical confidence interval coverage relative to the nominal 95% level.*
+
+### 3. Numerical Greek Stability
+
+Thirteen relative finite-difference step sizes, ranging from 1e-1 to 1e-13, were evaluated across three market scenarios, two option types, and five Greeks.
+
+| Greek | Best Observed Relative Step Sizes |
 |---|---|
 | Delta | 1e-7 to 1e-6 |
 | Gamma | 1e-4 |
@@ -155,50 +266,73 @@ Thirteen relative step sizes from $10^{-1}$ to $10^{-13}$ were evaluated across 
 | Vega | 1e-6 to 1e-5 |
 | Rho | 1e-5 to 1e-3 |
 
-Gamma achieved its minimum observed error at 1e-4 in all six scenario and option-type combinations. The results illustrate the competing effects of finite-difference truncation and floating-point cancellation. These are minima within the tested grid, not universal optimal step sizes.
+Gamma achieved its minimum observed numerical error at a relative step size of 1e-4 in all six tested scenario and option-type combinations.
 
-![Delta and Gamma absolute error across relative finite-difference step sizes](results/figures/greek_stability.png)
+The results illustrate the interaction between finite-difference truncation error and floating-point cancellation.
 
-*Figure 4. Finite-difference stability for at-the-money calls and puts.*
+These step sizes represent empirical minima within the tested grid rather than universally optimal numerical parameters.
 
-### 4. Implied volatility conditioning
+![Numerical Greek stability](results/figures/greek_stability.png)
 
-Five strikes, four expiration periods, two option types and six price perturbations were evaluated.
+*Figure 4. Finite-difference stability for Delta and Gamma under at-the-money option configurations.*
 
-| Outcome | Count |
+### 4. Implied Volatility Conditioning
+
+The implied volatility study evaluates five strike prices, four expiration periods, two option types, and six option-price perturbations.
+
+| Experimental Outcome | Observations |
 |---|---:|
-| Successful numerical recovery | 208 |
+| Successful numerical recoveries | 208 |
 | Outside strict pricing bounds | 32 |
 | Solver failures | 0 |
+| **Total** | **240** |
 
-For a locally invertible European pricing function, $\partial\sigma/\partial V=1/(\partial V/\partial\sigma)$. Low Vega can therefore amplify small option-price perturbations into large volatility errors. The heatmap shows theoretical inverse sensitivity, not realized errors from individual perturbations.
+For a locally invertible European option pricing function, the sensitivity of implied volatility to option price is:
 
-![Inverse Vega across strikes and expiration periods](results/figures/volatility_conditioning.png)
+```math
+\frac{\partial \sigma}{\partial V}
+=
+\frac{1}{\partial V/\partial \sigma}
+```
 
-*Figure 5. Local implied volatility conditioning, displayed on a logarithmic color scale.*
+Low Vega can amplify small option-price perturbations into substantial implied volatility errors.
 
-### 5. Computational benchmarking
+![Implied volatility conditioning](results/figures/volatility_conditioning.png)
 
-Twenty computational configurations were evaluated with thirty timed executions per configuration. Selected results from the recorded local environment are shown below.
+*Figure 5. Theoretical local inverse sensitivity across strike prices and expiration periods.*
 
-| Model | Resolution | Median runtime (ms) | RMSE |
+The heatmap represents local conditioning rather than realized recovery errors from individual price perturbations.
+
+### 5. Computational Benchmarking
+
+Twenty computational configurations were evaluated using thirty timed executions per configuration.
+
+Selected results from the recorded development environment are presented below.
+
+| Model | Resolution | Median Runtime (ms) | RMSE |
 |---|---:|---:|---:|
 | Black-Scholes-Merton | Analytical | 0.001167 | 0 |
-| CRR binomial | 1,024 steps | 2.086354 | 0.000449 |
+| CRR Binomial | 1,024 steps | 2.086354 | 0.000449 |
 | Standard Monte Carlo | 65,536 | 0.933958 | 0.056573 |
 | Antithetic Monte Carlo | 65,536 | 0.755375 | 0.052959 |
-| Control variate | 65,536 | 0.920001 | 0.027772 |
+| Control Variate | 65,536 | 0.920001 | 0.027772 |
 | Combined Monte Carlo | 65,536 | 0.794209 | 0.013368 |
 
-The analytical reference has zero measured approximation error by construction. The 1,024-step CRR tree achieved the smallest non-reference error in this benchmark; the combined Monte Carlo method achieved the lowest stochastic RMSE. Runtime depends on the machine, software and system load. Tree steps and simulation counts are different units of computational resolution.
+The analytical model serves as the reference and therefore has zero measured approximation error by construction.
 
-![Median runtime versus pricing RMSE for binomial and Monte Carlo implementations](results/figures/performance_benchmark.png)
+Among the tested non-reference configurations, the 1,024-step binomial tree achieved the lowest pricing error. The combined Monte Carlo estimator achieved the lowest stochastic RMSE.
 
-*Figure 6. Measured computational cost versus accuracy. The zero-error analytical reference is omitted from the logarithmic plot.*
+Tree resolutions and simulation budgets represent different computational units. Execution times depend on hardware, software, and system load.
 
-## Python examples
+![Computational benchmarking](results/figures/performance_benchmark.png)
 
-From the repository root, the individual mathematical engines can be imported directly. Rates, yields and volatility are expressed as decimals.
+*Figure 6. Measured computational cost versus numerical pricing accuracy.*
+
+The zero-error analytical reference is excluded from the logarithmic performance plot.
+
+## Python Examples
+
+The mathematical engines can be imported directly from the repository root.
 
 ```python
 from pricing import black_scholes_call
@@ -209,56 +343,91 @@ from analysis import calculate_greeks
 from numerical_greeks import numerical_greeks
 
 market = (100, 105, 1, 0.05, 0.25)
-q = 0.02
+dividend_yield = 0.02
 
-# Analytical European call price
-reference = black_scholes_call(*market, dividend_yield=q)
+# Analytical European call valuation
+
+reference = black_scholes_call(
+    *market,
+    dividend_yield=dividend_yield
+)
+
 print(f"European call: {reference:.6f}")
 
-# American put price
+# American put valuation
+
 american_put = crr_price(
-    *market, steps=1024, option_type="put",
-    exercise_style="american", dividend_yield=q
+    *market,
+    steps=1024,
+    option_type="put",
+    exercise_style="american",
+    dividend_yield=dividend_yield
 )
+
 print(f"American put: {american_put:.6f}")
 
-# European call via combined Monte Carlo
+# Monte Carlo valuation with variance reduction
+
 estimate = monte_carlo_price(
-    *market, simulations=65536, option_type="call",
-    dividend_yield=q, seed=42, method="combined"
+    *market,
+    simulations=65536,
+    option_type="call",
+    dividend_yield=dividend_yield,
+    seed=42,
+    method="combined"
 )
+
 print("Monte Carlo estimate:", estimate["price"])
 print("Standard error:", estimate["standard_error"])
-print("95% confidence interval:", estimate["confidence_interval"])
+print("Approximate 95% CI:", estimate["confidence_interval"])
 
-# Recover volatility from the theoretical reference price
+# Implied volatility recovery
+
 recovered = implied_volatility(
-    reference, *market[:4], option_type="call", dividend_yield=q
+    reference,
+    *market[:4],
+    option_type="call",
+    dividend_yield=dividend_yield
 )
+
 print(f"Implied volatility: {recovered:.2%}")
 
-# Compare analytical and numerical Greeks
-analytical = calculate_greeks(*market, option_type="call", dividend_yield=q)
-numerical = numerical_greeks(*market, option_type="call", dividend_yield=q)
+# Analytical and numerical Greek comparison
+
+analytical = calculate_greeks(
+    *market,
+    option_type="call",
+    dividend_yield=dividend_yield
+)
+
+numerical = numerical_greeks(
+    *market,
+    option_type="call",
+    dividend_yield=dividend_yield
+)
+
 for greek in analytical:
     print(greek, analytical[greek], numerical[greek])
 ```
 
-The analytical call price should be approximately 8.941176 and the recovered volatility approximately 25%. The Monte Carlo estimate is stochastic, with a fixed seed used in this example.
+The analytical European call price should be approximately 8.941176 USD. Recovered implied volatility should be approximately 25%.
 
-## Project architecture
+The Monte Carlo estimate uses a fixed random seed for reproducibility.
+
+## Project Architecture
 
 ```text
 black-scholes-options-lab/
-├── main.py                       # Interactive application
-├── pricing.py                    # Analytical pricing
-├── analysis.py                   # Analytical Greeks
-├── lattice.py                    # CRR binomial valuation
-├── monte_carlo.py                # Simulation and variance reduction
-├── implied_volatility.py          # Volatility inversion
-├── numerical_greeks.py            # Finite-difference sensitivities
-├── visualization.py              # Interactive plotting
-├── experiments.py                # Tree and Monte Carlo studies
+├── main.py
+├── pricing.py
+├── analysis.py
+├── lattice.py
+├── monte_carlo.py
+├── implied_volatility.py
+├── numerical_greeks.py
+├── visualization.py
+├── experiments.py
+│
 ├── research/
 │   ├── __init__.py
 │   ├── numerical_stability.py
@@ -268,76 +437,211 @@ black-scholes-options-lab/
 │   ├── environment.py
 │   ├── reproduce.py
 │   └── technical_report.md
+│
 ├── results/
 │   ├── data/
 │   ├── figures/
 │   └── environment.json
+│
 ├── tests/
-├── .github/workflows/tests.yml    # Continuous integration
+│   ├── test_analysis.py
+│   ├── test_dividends.py
+│   ├── test_implied_volatility.py
+│   ├── test_interface.py
+│   ├── test_lattice.py
+│   ├── test_monte_carlo.py
+│   ├── test_numerical_greeks.py
+│   ├── test_pricing.py
+│   └── test_research_pipeline.py
+│
+├── .github/
+│   └── workflows/
+│       └── tests.yml
+│
 ├── .gitignore
 ├── requirements.txt
+├── LICENSE
 └── README.md
 ```
 
-## Reproducibility and validation
+| Component | Responsibility |
+|---|---|
+| Core mathematical modules | Analytical, numerical, and stochastic calculations |
+| [main.py](main.py) | Interactive application and input handling |
+| [visualization.py](visualization.py) | Interactive pricing and sensitivity visualizations |
+| [experiments.py](experiments.py) | Binomial and Monte Carlo convergence studies |
+| [research/](research/) | Computational experiments, reproducibility, and technical documentation |
+| [results/](results/) | Published datasets, research figures, and environment metadata |
+| [tests/](tests/) | Mathematical, statistical, and software validation |
+| [GitHub Actions](https://github.com/LakshSuri/black-scholes-options-lab/actions) | Automated continuous integration |
 
-### Reproduce the research
+## Reproducibility and Validation
+
+### Research Reproduction
+
+Regenerate all five computational studies, eight CSV datasets, six research figures, and environment metadata using:
 
 ```bash
 python -m research.reproduce
 ```
 
-This regenerates the five computational studies, eight CSV datasets, six figures and environment metadata under `reproduced-results/`, preserving the published measurements by default. Individual research modules can also be executed directly; their default output paths may overwrite the original results, so use the unified command for routine reproduction.
+Generated outputs are stored separately:
 
-The recorded environment is available in [results/environment.json](results/environment.json). Direct package versions are pinned in [requirements.txt](requirements.txt).
+```text
+reproduced-results/
+├── data/
+├── figures/
+└── environment.json
+```
 
-| Component | Recorded version |
+The unified reproduction command preserves the original published experimental results by default.
+
+Individual research modules can also be executed separately, but their default output directories may overwrite previously generated results.
+
+### Computational Environment
+
+The recorded development environment uses the following software:
+
+| Technology | Recorded Version |
 |---|---|
 | [CPython](https://docs.python.org/3.14/) | 3.14.6 |
 | [NumPy](https://numpy.org/doc/) | 2.5.5 |
 | [Matplotlib](https://matplotlib.org/stable/) | 3.11.2 |
 | [pytest](https://docs.pytest.org/) | 9.2.0 |
 
-The original experiments ran on macOS (ARM64). The Monte Carlo and benchmark studies use seed 42. Runtime and some floating-point results may vary across environments; pinned direct dependencies do not guarantee bit-for-bit reproducibility.
+Direct Python dependencies are pinned in [requirements.txt](requirements.txt).
 
-### Automated tests
+Additional operating system, architecture, dependency, and experimental configuration information is available in [environment.json](results/environment.json).
+
+The Monte Carlo and benchmark experiments use seed 42.
+
+Fixed seeds and pinned direct dependencies support reproducibility, although runtime measurements and floating-point results may vary across computing environments.
+
+### Automated Testing
+
+Execute the complete test suite:
 
 ```bash
 python -m pytest -q
 ```
 
-The recorded local run passed 212 tests. The [test suite](tests/) covers pricing identities, analytical and numerical sensitivities, input validation, implied volatility, lattice pricing, stochastic reproducibility, uncertainty estimates, research datasets and figure generation.
+Recorded local validation:
 
-[Continuous integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml) runs dependency checks and the automated tests on Ubuntu with Python 3.14. The CI badge at the top links to the workflow and reflects its reported status. The recorded local test count is reported separately above.
+```text
+212 passed
+```
+
+The automated test suite covers:
+
+- Analytical option valuation.
+- Dividend-adjusted pricing.
+- Put-call parity.
+- Mathematical input validation.
+- Analytical and numerical Greeks.
+- Implied volatility recovery.
+- European and American binomial valuation.
+- Monte Carlo reproducibility.
+- Variance reduction and statistical uncertainty.
+- Research dataset integrity.
+- Research figure generation.
+- Interactive application behavior.
+- Visualization data accuracy.
+- Invalid input and calculation error recovery.
+
+### Continuous Integration
+
+GitHub Actions automatically validates the project using Python 3.14 on Ubuntu.
+
+The workflow installs dependencies, checks dependency compatibility, and executes the automated test suite.
+
+[View Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)
+
+The status badge at the top of this README reflects the reported workflow status for the main branch.
+
+### Version History
+
+Versioned releases provide identifiable snapshots of the software, documentation, and computational research materials.
+
+[View Releases and Release Notes](https://github.com/LakshSuri/black-scholes-options-lab/releases)
+
+## Technical Documentation
+
+The complete research methodology, mathematical derivations, experimental designs, results, and academic references are documented in:
+
+**[Computational Analysis of Derivatives Pricing Models](research/technical_report.md)**
+
+Supporting materials:
+
+- [Computational Research Datasets](results/data/)
+- [Published Research Figures](results/figures/)
+- [Experimental Environment](results/environment.json)
+- [Automated Test Suite](tests/)
+- [Repository Commit History](https://github.com/LakshSuri/black-scholes-options-lab/commits/main/)
 
 ## Limitations
 
-- The pricing models assume constant volatility, risk-free rates and continuous dividend yields.
-- Experiments use synthetic parameters rather than observed historical option prices; transaction costs, liquidity and market microstructure are excluded.
-- Monte Carlo supports European terminal payoffs, not general path-dependent or early-exercise contracts.
-- American exercise is approximated at discrete tree nodes. The implied volatility solver has a finite numerical search domain.
-- Confidence intervals are approximate and the studies cover a limited parameter grid. Numerical differentiation is subject to roundoff and truncation error.
-- Benchmarks represent one recorded computing environment. Passing tests provide evidence within tested configurations, not a proof of correctness for all inputs.
+The current laboratory operates under simplified financial market assumptions.
 
-The laboratory is an educational investigation of numerical pricing methods, not a validated trading system or evidence of investment profitability.
+- Constant volatility, interest rates, and continuous dividend yields.
+- Synthetic market configurations rather than observed historical option prices.
+- No transaction costs, liquidity modeling, or market microstructure.
+- Limited experimental parameter grids.
+- Approximate Monte Carlo confidence intervals.
+- Finite-sample statistical uncertainty.
+- Restricted implied volatility search domain.
+- Discrete approximation of American early exercise.
+- European terminal-payoff Monte Carlo valuation.
+- Floating-point sensitivity in numerical differentiation.
+- Hardware-dependent runtime measurements.
+
+Passing automated tests provides evidence of correctness within tested configurations rather than guaranteeing correctness for every possible input.
+
+The project evaluates established mathematical models under controlled conditions. It does not establish real-world predictive accuracy or trading profitability.
 
 ## References
 
 1. Black, F., & Scholes, M. (1973). [The Pricing of Options and Corporate Liabilities](https://doi.org/10.1086/260062). *Journal of Political Economy, 81*(3), 637–654.
+
 2. Merton, R. C. (1973). [Theory of Rational Option Pricing](https://doi.org/10.2307/3003143). *Bell Journal of Economics and Management Science, 4*(1), 141–183.
+
 3. Cox, J. C., Ross, S. A., & Rubinstein, M. (1979). [Option Pricing: A Simplified Approach](https://doi.org/10.1016/0304-405X(79)90015-1). *Journal of Financial Economics, 7*(3), 229–263.
+
 4. Glasserman, P. (2004). [Monte Carlo Methods in Financial Engineering](https://doi.org/10.1007/978-0-387-21617-1). Springer.
 
-For the complete methodology and detailed mathematical discussion, see the [technical report](research/technical_report.md).
+## Future Development
 
-## Future development
+Potential extensions include:
 
-Potential extensions include stochastic volatility and Heston calibration, implied volatility surfaces, quasi-Monte Carlo and jump-diffusion methods, Longstaff-Schwartz American option valuation, adaptive differentiation, historical option-chain validation, and broader cross-platform benchmarking.
+- Stochastic volatility modeling.
+- Heston model calibration.
+- Implied volatility surface construction.
+- Quasi-Monte Carlo simulation.
+- Jump-diffusion processes.
+- Longstaff-Schwartz American option valuation.
+- Adaptive numerical differentiation.
+- Historical option-chain validation.
+- Broader cross-platform benchmarking.
+- Interactive research website integration.
+- Integration with a comprehensive quantitative research platform.
 
-## Development transparency
+## Development Transparency
 
-This educational project was developed with substantial ChatGPT-assisted coding and technical guidance. The repository owner executed the computational experiments and automated tests locally and managed the repository. The study investigates established mathematical methods and does not claim original discovery of the underlying models or peer-reviewed publication.
+The repository owner executed the computational experiments and automated tests locally and managed the development repository.
 
-**Repository owner:** [Laksh Suri](https://github.com/LakshSuri)
+The project investigates established mathematical methods through reproducible computational experiments rather than claiming original discovery of the underlying models or peer-reviewed publication.
 
-Research interests: quantitative finance, computational mathematics, probability, statistics, and software development.
+**Repository Owner:** [Laksh Suri](https://github.com/LakshSuri)
+
+Research interests include quantitative finance, computational mathematics, probability, statistics, and software development.
+
+## License
+
+This project's software is distributed under the [MIT License](LICENSE), subject to applicable third-party rights and licensing requirements.
+
+Copyright © 2026 Laksh Suri.
+
+See the [LICENSE](LICENSE) file for the complete license terms.
+
+---
+
+Developed for educational and computational research purposes. Not intended for investment or trading decisions.
