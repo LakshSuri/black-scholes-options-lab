@@ -25,7 +25,7 @@ def load_convergence_data():
     )
 
 
-def convergence_chart(data):
+def convergence_chart(data, selected_budget=None):
     figure = go.Figure()
 
     for method in METHOD_COLORS:
@@ -43,7 +43,10 @@ def convergence_chart(data):
                     "color": METHOD_COLORS[method],
                     "width": 2
                 },
-                marker={"size": 7},
+                marker={
+                    "size": [12 if n == selected_budget else 6 for n in subset["budget"]],
+                    "line": {"width": 1, "color": COLORS["background"]}
+                },
                 hovertemplate=(
                     "Evaluations: %{x:,}"
                     "<br>RMSE: %{y:.6f}"
@@ -64,7 +67,9 @@ def convergence_chart(data):
         type="log"
     )
 
-    return style_figure(figure, height=430)
+    style_figure(figure, height=430)
+    figure.update_layout(hovermode="x unified")
+    return figure
 
 
 def render():
@@ -79,7 +84,7 @@ def render():
         ("Pricing methods", "06"),
         ("Research studies", "05"),
         ("Recorded observations", "2,958"),
-        ("Recorded passing tests", "212")
+        ("Released validation tests", "309")
     ])
 
     st.divider()
@@ -93,21 +98,34 @@ def render():
 
     data = load_convergence_data()
 
-    st.plotly_chart(
-        convergence_chart(data),
-        width="stretch",
-        config={"displaylogo": False}
+    budgets = sorted(int(n) for n in data["budget"].unique())
+    budget = st.select_slider(
+        "Evaluations per run",
+        options=budgets,
+        value=budgets[-1],
+        format_func=lambda count: f"{count:,}",
+        key="overview_budget"
     )
+    if st.button("Replay convergence curves", key="replay_convergence"):
+        st.session_state["convergence_take"] = not st.session_state.get(
+            "convergence_take", False
+        )
+    take = "b" if st.session_state.get("convergence_take") else "a"
+    with st.container(key=f"study-{take}"):
+        st.plotly_chart(
+            convergence_chart(data, budget),
+            width="stretch",
+            theme=None,
+            config={"displaylogo": False}
+        )
 
-    largest_budget = data[
-        data["budget"] == data["budget"].max()
-    ].set_index("method")
+    selected_rows = data[data["budget"] == budget].set_index("method")
 
-    standard_rmse = largest_budget.loc[
+    standard_rmse = selected_rows.loc[
         "standard", "rmse"
     ]
 
-    combined_rmse = largest_budget.loc[
+    combined_rmse = selected_rows.loc[
         "combined", "rmse"
     ]
 
@@ -115,11 +133,11 @@ def render():
         1 - combined_rmse / standard_rmse
     ) * 100
 
-    efficiency = largest_budget.loc[
+    efficiency = selected_rows.loc[
         "combined", "relative_efficiency"
     ]
 
-    coverage = largest_budget.loc[
+    coverage = selected_rows.loc[
         "combined", "coverage"
     ]
 
@@ -132,7 +150,7 @@ def render():
 
     st.caption(
         "Results are calculated from the recorded "
-        "65,536-evaluation experiment. Relative MSE "
+        f"{budget:,}-evaluation experiment. Relative MSE "
         "efficiency does not represent a runtime speedup."
     )
 
