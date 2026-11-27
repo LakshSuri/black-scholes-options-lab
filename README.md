@@ -1,5 +1,7 @@
 # Derivatives Pricing Laboratory
 
+[![Live Application](https://img.shields.io/badge/Application-Live-69D3B5)](https://derivatives-research-lab.streamlit.app)
+
 [![Python 3.14](https://img.shields.io/badge/Python-3.14-blue)](https://docs.python.org/3.14/)
 [![Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
@@ -14,7 +16,7 @@ The project investigates established derivatives pricing methods under controlle
 
 | Pricing Implementations | Computational Studies | Experimental Observations | Passing Local Tests |
 |:---:|:---:|:---:|:---:|
-| 6 | 5 | 2,958 | 212 |
+| 6 | 5 | 2,958 | 309 |
 
 The laboratory integrates one analytical pricing model, one lattice-based numerical model, and four Monte Carlo estimators within a modular Python framework.
 
@@ -22,6 +24,7 @@ Additional capabilities include analytical and numerical calculations of five op
 
 ## Contents
 
+- [Interactive Research Laboratory](#interactive-research-laboratory)
 - [Quick Start](#quick-start)
 - [Mathematical Framework](#mathematical-framework)
 - [Research Findings](#research-findings)
@@ -34,6 +37,34 @@ Additional capabilities include analytical and numerical calculations of five op
 - [Future Development](#future-development)
 - [Development Transparency](#development-transparency)
 - [License](#license)
+
+## Interactive Research Laboratory
+
+**[Launch the live application](https://derivatives-research-lab.streamlit.app)**
+
+The web application provides seven integrated research
+workspaces powered by the underlying computational engines.
+
+| Workspace | Capabilities |
+|---|---|
+| Overview | Research metrics and computational findings |
+| Option Valuation | Analytical and lattice-based valuation |
+| Sensitivity Analysis | Analytical and numerical Greeks |
+| Monte Carlo Laboratory | Stochastic simulation and variance reduction |
+| Implied Volatility | Numerical inversion and conditioning analysis |
+| Pricing Surfaces | Interactive 3D surfaces and contour maps |
+| Research Library | Datasets, figures and reproducibility resources |
+
+The publicly hosted application requires no local installation.
+
+To run the web application locally:
+
+```bash
+python -m streamlit run app.py
+```
+
+The application uses synthetic model parameters for educational
+and computational research.
 
 ## Quick Start
 
@@ -528,7 +559,7 @@ python -m pytest -q
 Recorded local validation:
 
 ```text
-212 passed
+309 passed
 ```
 
 The automated test suite covers:
@@ -621,7 +652,7 @@ Potential extensions include:
 - Adaptive numerical differentiation.
 - Historical option-chain validation.
 - Broader cross-platform benchmarking.
-- Interactive research website integration.
+- Continued expansion of interactive research workspaces.
 - Integration with a comprehensive quantitative research platform.
 
 ## Development Transparency
