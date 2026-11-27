@@ -8,7 +8,7 @@ from web.components import (
     footer
 )
 
-from web.views import overview, valuation
+from web.views import overview, valuation, sensitivity
 
 
 st.set_page_config(
@@ -29,11 +29,14 @@ PAGES = (
 )
 
 
+PAGE_HANDLERS = {
+    "Overview": overview.render,
+    "Option Valuation": valuation.render,
+    "Sensitivity Analysis": sensitivity.render
+}
+
+
 PAGE_DESCRIPTIONS = {
-    "Sensitivity Analysis": (
-        "Analytical and numerical option Greeks "
-        "across changing model parameters."
-    ),
     "Monte Carlo Laboratory": (
         "Stochastic pricing, variance reduction "
         "and statistical uncertainty."
@@ -94,11 +97,8 @@ def main():
 
     selected = navigation()
 
-    if selected == "Overview":
-        overview.render()
-
-    elif selected == "Option Valuation":
-        valuation.render()
+    if selected in PAGE_HANDLERS:
+        PAGE_HANDLERS[selected]()
 
     else:
         page_header(
