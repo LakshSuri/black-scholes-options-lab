@@ -12,7 +12,8 @@ from web.views import (
     overview,
     valuation,
     sensitivity,
-    simulation
+    simulation,
+    volatility
 )
 
 
@@ -38,15 +39,12 @@ PAGE_HANDLERS = {
     "Overview": overview.render,
     "Option Valuation": valuation.render,
     "Sensitivity Analysis": sensitivity.render,
-    "Monte Carlo Laboratory": simulation.render
+    "Monte Carlo Laboratory": simulation.render,
+    "Implied Volatility": volatility.render
 }
 
 
 PAGE_DESCRIPTIONS = {
-    "Implied Volatility": (
-        "Numerical volatility recovery and "
-        "pricing-function conditioning."
-    ),
     "Pricing Surfaces": (
         "Multidimensional visualization of "
         "theoretical option values."
