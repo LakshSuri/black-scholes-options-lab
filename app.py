@@ -1,0 +1,119 @@
+import streamlit as st
+
+from web.components import (
+    REPOSITORY,
+    apply_styles,
+    sidebar_brand,
+    page_header,
+    footer
+)
+
+from web.views import overview
+
+
+st.set_page_config(
+    page_title="Derivatives Pricing Laboratory",
+    layout="wide",
+    initial_sidebar_state="expanded"
+)
+
+
+PAGES = (
+    "Overview",
+    "Option Valuation",
+    "Sensitivity Analysis",
+    "Monte Carlo Laboratory",
+    "Implied Volatility",
+    "Pricing Surfaces",
+    "Research Library"
+)
+
+
+PAGE_DESCRIPTIONS = {
+    "Option Valuation": (
+        "Analytical and lattice-based European and "
+        "American option valuation."
+    ),
+    "Sensitivity Analysis": (
+        "Analytical and numerical option Greeks "
+        "across changing model parameters."
+    ),
+    "Monte Carlo Laboratory": (
+        "Stochastic pricing, variance reduction "
+        "and statistical uncertainty."
+    ),
+    "Implied Volatility": (
+        "Numerical volatility recovery and "
+        "pricing-function conditioning."
+    ),
+    "Pricing Surfaces": (
+        "Multidimensional visualization of "
+        "theoretical option values."
+    ),
+    "Research Library": (
+        "Computational datasets, experimental figures "
+        "and reproducibility resources."
+    )
+}
+
+
+def navigation():
+    sidebar_brand()
+
+    st.sidebar.divider()
+
+    selected = st.sidebar.radio(
+        "Research workspace",
+        PAGES
+    )
+
+    st.sidebar.divider()
+
+    st.sidebar.caption("RESOURCES")
+
+    st.sidebar.markdown(
+        f"[GitHub Repository]({REPOSITORY})"
+    )
+
+    st.sidebar.markdown(
+        f"[Technical Report]({REPOSITORY}/blob/main/"
+        "research/technical_report.md)"
+    )
+
+    st.sidebar.markdown(
+        f"[Release History]({REPOSITORY}/releases)"
+    )
+
+    st.sidebar.divider()
+
+    st.sidebar.caption(
+        "Core software release 1.0.1"
+    )
+
+    return selected
+
+
+def main():
+    apply_styles()
+
+    selected = navigation()
+
+    if selected == "Overview":
+        overview.render()
+
+    else:
+        page_header(
+            "Research Workspace",
+            selected,
+            PAGE_DESCRIPTIONS[selected]
+        )
+
+        st.info(
+            "This workspace is currently under development."
+        )
+
+    footer()
+
+
+if __name__ == "__main__":
+    main()
