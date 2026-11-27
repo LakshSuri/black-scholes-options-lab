@@ -8,7 +8,12 @@ from web.components import (
     footer
 )
 
-from web.views import overview, valuation, sensitivity
+from web.views import (
+    overview,
+    valuation,
+    sensitivity,
+    simulation
+)
 
 
 st.set_page_config(
@@ -32,15 +37,12 @@ PAGES = (
 PAGE_HANDLERS = {
     "Overview": overview.render,
     "Option Valuation": valuation.render,
-    "Sensitivity Analysis": sensitivity.render
+    "Sensitivity Analysis": sensitivity.render,
+    "Monte Carlo Laboratory": simulation.render
 }
 
 
 PAGE_DESCRIPTIONS = {
-    "Monte Carlo Laboratory": (
-        "Stochastic pricing, variance reduction "
-        "and statistical uncertainty."
-    ),
     "Implied Volatility": (
         "Numerical volatility recovery and "
         "pricing-function conditioning."
