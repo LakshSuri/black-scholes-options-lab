@@ -8,7 +8,7 @@ from web.components import (
     footer
 )
 
-from web.views import overview
+from web.views import overview, valuation
 
 
 st.set_page_config(
@@ -30,10 +30,6 @@ PAGES = (
 
 
 PAGE_DESCRIPTIONS = {
-    "Option Valuation": (
-        "Analytical and lattice-based European and "
-        "American option valuation."
-    ),
     "Sensitivity Analysis": (
         "Analytical and numerical option Greeks "
         "across changing model parameters."
@@ -100,6 +96,9 @@ def main():
 
     if selected == "Overview":
         overview.render()
+
+    elif selected == "Option Valuation":
+        valuation.render()
 
     else:
         page_header(
