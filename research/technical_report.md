@@ -504,8 +504,6 @@ This project provides an educational computational foundation for further explor
 
 ## 10. Development Transparency
 
-This educational project was developed with substantial AI-assisted coding and technical guidance using ChatGPT. The repository owner executed the experiments and automated tests locally and managed the repository.
-
 The experimental results reported here originate from the generated computational datasets. The project reproduces and investigates established mathematical methods rather than claiming original discoveries of those methods.
 
 ## 11. References and Further Reading
