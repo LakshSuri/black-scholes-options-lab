@@ -449,6 +449,7 @@ The Monte Carlo estimate uses a fixed random seed for reproducibility.
 
 ```text
 derivatives-pricing-lab/
+├── app.py
 ├── main.py
 ├── pricing.py
 ├── analysis.py
@@ -458,6 +459,22 @@ derivatives-pricing-lab/
 ├── numerical_greeks.py
 ├── visualization.py
 ├── experiments.py
+│
+├── web/
+│   ├── __init__.py
+│   ├── components.py
+│   └── views/
+│       ├── __init__.py
+│       ├── overview.py
+│       ├── valuation.py
+│       ├── sensitivity.py
+│       ├── simulation.py
+│       ├── volatility.py
+│       ├── surfaces.py
+│       └── library.py
+│
+├── .streamlit/
+│   └── config.toml
 │
 ├── research/
 │   ├── __init__.py
@@ -483,7 +500,8 @@ derivatives-pricing-lab/
 │   ├── test_monte_carlo.py
 │   ├── test_numerical_greeks.py
 │   ├── test_pricing.py
-│   └── test_research_pipeline.py
+│   ├── test_research_pipeline.py
+│   └── test_web.py
 │
 ├── .github/
 │   └── workflows/
@@ -498,6 +516,8 @@ derivatives-pricing-lab/
 | Component | Responsibility |
 |---|---|
 | Core mathematical modules | Analytical, numerical, and stochastic calculations |
+| [app.py](app.py) | Interactive web application and navigation |
+| [web/](web/) | Research workspaces, visualizations, and interface components |
 | [main.py](main.py) | Interactive application and input handling |
 | [visualization.py](visualization.py) | Interactive pricing and sensitivity visualizations |
 | [experiments.py](experiments.py) | Binomial and Monte Carlo convergence studies |
@@ -578,6 +598,9 @@ The automated test suite covers:
 - Interactive application behavior.
 - Visualization data accuracy.
 - Invalid input and calculation error recovery.
+- Navigation and rendering across seven web workspaces.
+- Interactive pricing surface calculations and exports.
+- Research archive integrity and web application validation.
 
 ### Continuous Integration
 

@@ -423,7 +423,7 @@ Runtime results depend on the execution environment and should not be interprete
 
 ## 5. Software Validation
 
-The project contains 212 locally passing automated tests covering:
+The core computational and command-line software contains 212 locally passing automated tests covering:
 
 - Analytical option pricing.
 - Put-call parity and mathematical consistency.
@@ -438,6 +438,8 @@ The project contains 212 locally passing automated tests covering:
 - Research dataset integrity.
 - Environment metadata generation.
 - Research figure generation.
+
+An additional 97 automated web application tests validate workspace navigation, mathematical outputs, simulation reproducibility, pricing surfaces, and research archive integrity. The integrated test suite contains 309 locally passing tests.
 
 Automated tests provide evidence of implementation correctness within their tested domains. They do not constitute a formal proof of correctness for every possible input.
 

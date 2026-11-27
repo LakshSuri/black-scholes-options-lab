@@ -69,7 +69,7 @@ def navigation():
     st.sidebar.divider()
 
     st.sidebar.caption(
-        "Core software release 1.0.1"
+        "Laboratory release 1.1.0"
     )
 
     return selected
