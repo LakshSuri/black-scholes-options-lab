@@ -1,14 +1,14 @@
 # Derivatives Pricing Laboratory
 
 [![Python 3.14](https://img.shields.io/badge/Python-3.14-blue)](https://docs.python.org/3.14/)
-[![Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)
+[![Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml/badge.svg?branch=main)](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
 
 A computational finance laboratory for European and American option valuation, numerical approximation, stochastic simulation, variance reduction, sensitivity analysis, and reproducible mathematical research.
 
 The project investigates established derivatives pricing methods under controlled mathematical assumptions, emphasizing numerical accuracy, convergence, statistical uncertainty, and computational efficiency.
 
-**[Technical Report](research/technical_report.md) · [Research Datasets](results/data/) · [Research Figures](results/figures/) · [Releases](https://github.com/LakshSuri/black-scholes-options-lab/releases) · [Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)**
+**[Technical Report](research/technical_report.md) · [Research Datasets](results/data/) · [Research Figures](results/figures/) · [Releases](https://github.com/LakshSuri/derivatives-pricing-lab/releases) · [Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)**
 
 ## Overview
 
@@ -44,8 +44,8 @@ Python 3.14 is the primary development environment. The recorded computational e
 For macOS or Linux with Python 3.14 installed:
 
 ```bash
-git clone https://github.com/LakshSuri/black-scholes-options-lab.git
-cd black-scholes-options-lab
+git clone https://github.com/LakshSuri/derivatives-pricing-lab.git
+cd derivatives-pricing-lab
 
 python3.14 -m venv .venv
 source .venv/bin/activate
@@ -417,7 +417,7 @@ The Monte Carlo estimate uses a fixed random seed for reproducibility.
 ## Project Architecture
 
 ```text
-black-scholes-options-lab/
+derivatives-pricing-lab/
 ├── main.py
 ├── pricing.py
 ├── analysis.py
@@ -473,7 +473,7 @@ black-scholes-options-lab/
 | [research/](research/) | Computational experiments, reproducibility, and technical documentation |
 | [results/](results/) | Published datasets, research figures, and environment metadata |
 | [tests/](tests/) | Mathematical, statistical, and software validation |
-| [GitHub Actions](https://github.com/LakshSuri/black-scholes-options-lab/actions) | Automated continuous integration |
+| [GitHub Actions](https://github.com/LakshSuri/derivatives-pricing-lab/actions) | Automated continuous integration |
 
 ## Reproducibility and Validation
 
@@ -554,7 +554,7 @@ GitHub Actions automatically validates the project using Python 3.14 on Ubuntu.
 
 The workflow installs dependencies, checks dependency compatibility, and executes the automated test suite.
 
-[View Continuous Integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml)
+[View Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)
 
 The status badge at the top of this README reflects the reported workflow status for the main branch.
 
@@ -562,7 +562,7 @@ The status badge at the top of this README reflects the reported workflow status
 
 Versioned releases provide identifiable snapshots of the software, documentation, and computational research materials.
 
-[View Releases and Release Notes](https://github.com/LakshSuri/black-scholes-options-lab/releases)
+[View Releases and Release Notes](https://github.com/LakshSuri/derivatives-pricing-lab/releases)
 
 ## Technical Documentation
 
@@ -576,7 +576,7 @@ Supporting materials:
 - [Published Research Figures](results/figures/)
 - [Experimental Environment](results/environment.json)
 - [Automated Test Suite](tests/)
-- [Repository Commit History](https://github.com/LakshSuri/black-scholes-options-lab/commits/main/)
+- [Repository Commit History](https://github.com/LakshSuri/derivatives-pricing-lab/commits/main/)
 
 ## Limitations
 
