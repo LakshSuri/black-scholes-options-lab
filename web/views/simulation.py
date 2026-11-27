@@ -704,20 +704,23 @@ def render():
         "Estimator comparison",
         "Live convergence",
         "Recorded research"
-    ])
+    ], key="simulation_tabs", on_change="rerun")
 
-    with single_tab:
-        render_single(parameters, budget, seed)
+    if single_tab.open:
+        with single_tab:
+            render_single(parameters, budget, seed)
 
-    with convergence_tab:
-        render_convergence(
-            parameters,
-            replications,
-            seed
-        )
+    if convergence_tab.open:
+        with convergence_tab:
+            render_convergence(
+                parameters,
+                replications,
+                seed
+            )
 
-    with recorded_tab:
-        render_recorded()
+    if recorded_tab.open:
+        with recorded_tab:
+            render_recorded()
 
     st.divider()
 

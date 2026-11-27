@@ -7,3 +7,6 @@ venv/
 .env
 # Regenerated research output
 reproduced-results/
+
+# Local application secrets
+.streamlit/secrets.toml

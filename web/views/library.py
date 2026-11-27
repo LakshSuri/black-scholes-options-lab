@@ -597,24 +597,27 @@ def render():
         "Data archive",
         "Figure gallery",
         "Documentation"
-    ])
+    ], key="library_tabs", on_change="rerun")
 
-    with data_tab:
-        render_datasets()
+    if data_tab.open:
+        with data_tab:
+            render_datasets()
 
-    with figures_tab:
-        render_figures()
+    if figures_tab.open:
+        with figures_tab:
+            render_figures()
 
-    with docs_tab:
-        render_report()
+    if docs_tab.open:
+        with docs_tab:
+            render_report()
 
-        st.divider()
+            st.divider()
 
-        render_environment()
+            render_environment()
 
-        st.divider()
+            st.divider()
 
-        render_reproduction()
+            render_reproduction()
 
     st.divider()
 
