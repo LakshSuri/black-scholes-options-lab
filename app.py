@@ -4,7 +4,6 @@ from web.components import (
     REPOSITORY,
     apply_styles,
     sidebar_brand,
-    page_header,
     footer
 )
 
@@ -14,7 +13,8 @@ from web.views import (
     sensitivity,
     simulation,
     volatility,
-    surfaces
+    surfaces,
+    library
 )
 
 
@@ -25,33 +25,18 @@ st.set_page_config(
 )
 
 
-PAGES = (
-    "Overview",
-    "Option Valuation",
-    "Sensitivity Analysis",
-    "Monte Carlo Laboratory",
-    "Implied Volatility",
-    "Pricing Surfaces",
-    "Research Library"
-)
-
-
 PAGE_HANDLERS = {
     "Overview": overview.render,
     "Option Valuation": valuation.render,
     "Sensitivity Analysis": sensitivity.render,
     "Monte Carlo Laboratory": simulation.render,
     "Implied Volatility": volatility.render,
-    "Pricing Surfaces": surfaces.render
+    "Pricing Surfaces": surfaces.render,
+    "Research Library": library.render
 }
 
 
-PAGE_DESCRIPTIONS = {
-    "Research Library": (
-        "Computational datasets, experimental figures "
-        "and reproducibility resources."
-    )
-}
+PAGES = tuple(PAGE_HANDLERS)
 
 
 def navigation():
@@ -95,19 +80,7 @@ def main():
 
     selected = navigation()
 
-    if selected in PAGE_HANDLERS:
-        PAGE_HANDLERS[selected]()
-
-    else:
-        page_header(
-            "Research Workspace",
-            selected,
-            PAGE_DESCRIPTIONS[selected]
-        )
-
-        st.info(
-            "This workspace is currently under development."
-        )
+    PAGE_HANDLERS[selected]()
 
     footer()
 
