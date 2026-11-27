@@ -10,7 +10,7 @@ A computational finance laboratory for European and American option valuation, n
 
 The project investigates established derivatives pricing methods under controlled mathematical assumptions, emphasizing numerical accuracy, convergence, statistical uncertainty, and computational efficiency.
 
-**[Technical Report](research/technical_report.md) · [Research Datasets](results/data/) · [Research Figures](results/figures/) · [Releases](https://github.com/LakshSuri/derivatives-pricing-lab/releases) · [Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)**
+**[Coding Journey — Portfolio Hub](https://github.com/LakshSuri/coding-journey) · [Technical Report](research/technical_report.md) · [Research Datasets](results/data/) · [Research Figures](results/figures/) · [Releases](https://github.com/LakshSuri/derivatives-pricing-lab/releases) · [Continuous Integration](https://github.com/LakshSuri/derivatives-pricing-lab/actions/workflows/tests.yml)**
 
 ## Overview
 
