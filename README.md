@@ -13,7 +13,7 @@ The project compares established derivatives pricing methods under controlled ma
 
 | Pricing implementations | Computational studies | Experimental observations | Recorded local tests |
 |:---:|:---:|:---:|:---:|
-| 6 | 5 | 2,958 | 186 passing |
+| 6 | 5 | 2,958 | 212 passing |
 
 The six pricing implementations comprise one analytical model, one binomial model, and four Monte Carlo estimators. The laboratory also includes analytical and numerical calculations of five Greeks, an implied volatility solver, thirteen interactive menu features, eight interactive visualization types, eight published CSV datasets, and six research figures.
 
@@ -306,7 +306,7 @@ The original experiments ran on macOS (ARM64). The Monte Carlo and benchmark stu
 python -m pytest -q
 ```
 
-The recorded local run passed 186 tests. The [test suite](tests/) covers pricing identities, analytical and numerical sensitivities, input validation, implied volatility, lattice pricing, stochastic reproducibility, uncertainty estimates, research datasets and figure generation.
+The recorded local run passed 212 tests. The [test suite](tests/) covers pricing identities, analytical and numerical sensitivities, input validation, implied volatility, lattice pricing, stochastic reproducibility, uncertainty estimates, research datasets and figure generation.
 
 [Continuous integration](https://github.com/LakshSuri/black-scholes-options-lab/actions/workflows/tests.yml) runs dependency checks and the automated tests on Ubuntu with Python 3.14. The CI badge at the top links to the workflow and reflects its reported status. The recorded local test count is reported separately above.
 

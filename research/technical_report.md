@@ -423,7 +423,7 @@ Runtime results depend on the execution environment and should not be interprete
 
 ## 5. Software Validation
 
-The project contains 186 locally passing automated tests covering:
+The project contains 212 locally passing automated tests covering:
 
 - Analytical option pricing.
 - Put-call parity and mathematical consistency.
