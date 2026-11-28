@@ -36,20 +36,18 @@ def sidebar_brand():
     st.sidebar.markdown(
         """
         <div style="display:flex;align-items:center;gap:12px;">
-            <svg width="40" height="40"
-                 viewBox="0 0 40 40"
-                 xmlns="http://www.w3.org/2000/svg">
-                <rect width="40" height="40" rx="5"
-                      fill="#3C2C21"/>
-                <path d="M8 8 V32 H33"
-                      fill="none"
-                      stroke="#B49E89"
-                      stroke-width="1"/>
-                <path d="M8 30 C17 30 21 26 25 18
-                         S31 7 34 6"
-                      fill="none"
-                      stroke="#FF925F"
-                      stroke-width="2.3"/>
+            <svg width="40" height="40" viewBox="0 0 40 40"
+                 xmlns="http://www.w3.org/2000/svg"
+                 aria-hidden="true" focusable="false">
+                <rect width="40" height="40" rx="5" fill="#393124"/>
+                <path d="M10 7 H23 L30 14 V32 H10 Z"
+                      fill="#F0C477" fill-opacity=".08"
+                      stroke="#F0C477" stroke-width="1.5" stroke-linejoin="round"/>
+                <path d="M23 7 V14 H30 M15 18 H24 M15 22 H20"
+                      fill="none" stroke="#F0C477" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                <circle cx="27.5" cy="28" r="7.5" fill="#393124" stroke="#F0C477" stroke-width="1.5"/>
+                <path d="M24 28 H31 M28.5 25.5 L31 28 L28.5 30.5"
+                      fill="none" stroke="#F0C477" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
             </svg>
             <div>
                 <div class="laboratory-wordmark">
